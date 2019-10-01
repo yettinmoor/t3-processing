@@ -1,3 +1,12 @@
+void getButtonChosen() {
+  if (mouseX > 100 && mouseX < 400) {
+    if (mouseY > 100 && mouseY < 200)
+      buttonChosen = 1;
+    else if (mouseY > 300 && mouseY < 400)
+      buttonChosen = 2;
+  }
+}
+
 // Return index of tile (0-8) mouse hovers on
 // or -1 if mouse off-screen
 void getMousePos() {
@@ -5,8 +14,6 @@ void getMousePos() {
 }
 
 void drawGrid() {
-  background(#222222);
-
   // Mouse highlight
   fill(#151515);
   if (mousePos >= 0 && board[mousePos] == 0) {
@@ -32,17 +39,34 @@ void drawSyms() {
     fill((board[i] == 1) ? #4477bb : #cc4444);
     ellipse(px, py, symRadius, symRadius);
   }
+
+  if (gameState == 0) {
+    fill((curPlayer == 1) ? #4477bb : #cc4444);
+    ellipse(mouseX, mouseY, symRadius/2, symRadius/2);
+  }
+}
+
+void tryMove() {
+  if (mousePos < 0 || board[mousePos] != 0)
+    return;
+  board[mousePos] = curPlayer;
+  println(str(board));
+  if (nPlayers == 1) {
+    /* int AIMove = miniMax(2, 0); */
+    /* if (AIMove >= 0) */
+    /*   board[AIMove] = 2; */
+  } else {
+    curPlayer = (curPlayer == 1) ? 2 : 1;
+  }
 }
 
 int checkWin() {
   for (int i = 0; i < 3; i++) {
-    if (board[i] == 0)
-      continue;
-    if (board[3*i] == board[3*i+1] && board[i] == board[3*i+2])
+    if (board[3*i] != 0 && board[3*i] == board[3*i+1] && board[3*i] == board[3*i+2])
       return board[i]; // row
-    if (board[i] == board[i+3] && board[i] == board[i+6])
+    if (board[i] != 0 && board[i] == board[i+3] && board[i] == board[i+6])
       return board[i]; // col
-    if (board[i] == board[4] && board[i] == board[8-i])
+    if (board[i] != 0 && board[i] == board[4] && board[i] == board[8-i])
       return board[i]; // diag
   }
 

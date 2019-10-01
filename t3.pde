@@ -1,3 +1,6 @@
+boolean gameStarted;
+int buttonChosen;
+int nPlayers;
 int[] board = new int[9];
 int curPlayer;
 int mousePos;
@@ -7,40 +10,27 @@ void setup() {
   size(500, 500);
   stroke(0);
   textSize(20);
+  textAlign(CENTER, CENTER);
 
+  gameStarted = false;
   for (int i = 0; i < 9; i++) board[i] = 0;
   curPlayer = 1;
   gameState = 0;
 }
 
 void draw() {
-  if (gameState == 0)
-    getMousePos();
+  background(#222222);
+  if (gameStarted)
+    drawGame();
   else
-    mousePos = -1;
-  drawGrid();
-  drawSyms();
-  gameState = checkWin();
-
-  switch (gameState) {
-    case 1:
-      fill(#4477bb);
-      text("Player 1 wins!", 10, 30);
-      break;
-    case 2:
-      fill(#cc4444);
-      text("Player 2 wins!", 10, 30);
-      break;
-    case -1:
-      fill(#aaaaaa);
-      text("Draw! Shameful display!", 10, 30);
-      break;
-  }
+    drawStart();
 }
 
 void mouseClicked() {
-  if (mousePos >= 0 && board[mousePos] == 0) {
-    board[mousePos] = curPlayer;
-    curPlayer = (curPlayer == 1) ? 2 : 1;
+  if (gameStarted) {
+    tryMove();
+  } else if (buttonChosen != 0) {
+    nPlayers = buttonChosen;
+    gameStarted = true;
   }
 }
